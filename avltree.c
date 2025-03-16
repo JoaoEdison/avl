@@ -127,7 +127,7 @@ unsigned char removed;
                 x->bf = -bf_y0;    
                 z->bf = 0;
             }
-			y->bf = 0;
+            y->bf = 0;
             // New x:
             x = y;
         }
@@ -345,7 +345,7 @@ int *nmemb;
     if (!r)
         return;
     keys_to_array_avl(t, r->child[0], arr, size, nmemb, capacity);
-	assert(*nmemb < capacity);
+    assert(*nmemb < capacity);
     memcpy(&arr[size**nmemb], r->key, size);
     ++*nmemb;
     keys_to_array_avl(t, r->child[1], arr, size, nmemb, capacity);

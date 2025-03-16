@@ -65,8 +65,8 @@ void posfix_avl(avl_tree *t, avl_node *r);
 #define posfix_avltree(T) \
     posfix_avl(&T, T.root)
 
-void keys_to_array_avl(avl_tree *t, avl_node *r, unsigned char *arr, size_t size, int *end);
-#define keys_to_array_avltree(T, ARR, SIZE, END) \
-    keys_to_array_avl(&T, T.root, ARR, SIZE, END)
+void keys_to_array_avl(avl_tree *t, avl_node *r, unsigned char *arr, size_t size, int *nmemb, int capacity);
+#define keys_to_array_avltree(T, ARR, SIZE, NMEMB, CAP) \
+    keys_to_array_avl(&T, T.root, ARR, SIZE, NMEMB, CAP)
 
 #endif

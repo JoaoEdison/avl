@@ -19,6 +19,7 @@
 #include "avltree.h"
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 void destroy_avl(t, r)
 avl_tree *t;
@@ -121,16 +122,12 @@ unsigned char removed;
             bf_y0 = y->bf;
             if (bf_y0 < 0) {
                 x->bf = 0;
-                z->bf = bf_z0 - bf_y0 + 1;
-
-                if (z->bf > 0)
-                    y->bf = bf_z0 + 1;
+                z->bf = 1;
             } else {
                 x->bf = -bf_y0;    
-                z->bf = bf_z0 + 1;
-                
-                y->bf = (bf_z0 + 1 > 0)? bf_z0 + 1 : 0;
+                z->bf = 0;
             }
+			y->bf = 0;
             // New x:
             x = y;
         }
@@ -160,16 +157,12 @@ unsigned char removed;
             bf_y0 = y->bf;
             if (bf_y0 > 0) {
                 x->bf = 0;
-                z->bf = bf_z0 - bf_y0 - 1;
-
-                if (z->bf < 0)
-                    y->bf = bf_z0 - 1;
+                z->bf = -1;
             } else {
                 x->bf = -bf_y0;    
-                z->bf = bf_z0 - 1;
-
-                y->bf = (bf_z0 - 1 < 0)? bf_z0 - 1 : 0;
+                z->bf = 0;
             }
+            y->bf = 0;
             // New x:
             x = y;
         // L
@@ -341,19 +334,21 @@ avl_node *r;
         putchar('\n');
 }
 
-void keys_to_array_avl(t, r, arr, size, end)
+/* Assumes that arr has sufficient capacity. */
+void keys_to_array_avl(t, r, arr, size, nmemb, capacity)
 avl_tree *t;
 avl_node *r;
 unsigned char *arr;
 size_t size;
-int *end;
+int *nmemb;
 {
     if (!r)
         return;
-    keys_to_array_avl(t, r->child[0], arr, size, end);
-    memcpy(&arr[size**end], r->key, size);
-    ++*end;
-    keys_to_array_avl(t, r->child[1], arr, size, end);
+    keys_to_array_avl(t, r->child[0], arr, size, nmemb, capacity);
+	assert(*nmemb < capacity);
+    memcpy(&arr[size**nmemb], r->key, size);
+    ++*nmemb;
+    keys_to_array_avl(t, r->child[1], arr, size, nmemb, capacity);
 }
 
 // Debug functions:

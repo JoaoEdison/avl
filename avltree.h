@@ -34,11 +34,7 @@ typedef struct {
 } avl_tree;
 
 #define create_alvtree(T, CMP_FN) \
-    { \
-        T.root = NULL; \
-        T.nmemb = 0; \
-        T.compar = CMP_FN; \
-    }
+	do { T.root = NULL; T.nmemb = 0; T.compar = CMP_FN; } while (0)
 
 void destroy_avl(avl_tree *t, avl_node *r);
 #define destroy_avltree(T) \

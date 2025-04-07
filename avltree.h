@@ -23,8 +23,8 @@
 typedef struct avl_node {
     short bf;
     struct avl_node *parent, *child[2];
-    unsigned char has_value;
     void *key, *value;
+    unsigned char has_value;
 } avl_node;
 
 typedef struct {
@@ -32,12 +32,15 @@ typedef struct {
     int nmemb;
     int (*compar)(void *, void *);
     void (*print_node)(FILE*, void *, void *);
+    /* If true, the insertion replaces values with the same key */
+    unsigned char inplace;
 } avl_tree;
 
-#define create_avltree(T, CMP_FN, PRINT_FN) \
+#define create_avltree(T, INPLACE, CMP_FN, PRINT_FN) \
     do { \
          T.root = NULL; \
          T.nmemb = 0; \
+         T.inplace = INPLACE; \
          T.compar = CMP_FN; \
          T.print_node = PRINT_FN; \
     } while (0)
@@ -73,9 +76,9 @@ avl_node *find_node_avl(avl_tree *t, avl_node *r, void *key, avl_node **parent);
 #define find_node_avltree_ptr(T, KEY) \
     find_node_avl(T, T->root, KEY, NULL)
 
-void insert_avltree(avl_tree *t, unsigned char inplace, void *key, void *value);
-#define insert_key_avltree(T, INPLACE, KEY) \
-    insert_avltree(T, INPLACE, KEY, NULL)
+void insert_avltree(avl_tree *t, void *key, void *value);
+#define insert_key_avltree(T, KEY) \
+    insert_avltree(T, KEY, NULL)
 
 void remove_avl(avl_tree *t, avl_node *z);
 

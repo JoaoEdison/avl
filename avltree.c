@@ -83,7 +83,7 @@ void *key;
     return find_node_avl(t, r->child[cmp > 0], key, parent);
 }
 
-// Least mirroed alg.
+/* Least mirroed alg. */
 static void retrace(t, x, z, inc, removed)
 avl_tree *t;
 avl_node *x, *z;
@@ -99,13 +99,13 @@ unsigned char removed;
     orig_bf = x->bf;
     x->bf += inc;
     
-    // Apply rotations.
+    /* Apply rotations. */
     if (x->parent)
         side_x = x->parent->child[1] == x;
-    // R
+    /* R */
     if (x->bf/2 > 0) {
         bf_z0 = z->bf;
-        // R
+        /* R */
         if (bf_z0 >= 0) {
             if (x->parent)
                 x->parent->child[side_x] = z;
@@ -118,12 +118,12 @@ unsigned char removed;
             z->child[0] = x;
             x->parent = z;
             
-            // Update BFs.
+            /* Update BFs. */
             x->bf = -bf_z0 + 1;
             z->bf = bf_z0 - 1;
-            // New x:
+            /* New x: */
             x = z;
-        // L    
+        /* L */
         } else {
             y = z->child[0];
             if (x->parent)
@@ -142,7 +142,7 @@ unsigned char removed;
             y->child[1] = z;
             z->parent = y;
             
-            // Update BFs.
+            /* Update BFs. */
             bf_y0 = y->bf;
             if (bf_y0 < 0) {
                 x->bf = 0;
@@ -152,13 +152,13 @@ unsigned char removed;
                 z->bf = 0;
             }
             y->bf = 0;
-            // New x:
+            /* New x: */
             x = y;
         }
-    // L
+    /* L */
     } else if (x->bf/2 < 0) {
         bf_z0 = z->bf;
-        // R    
+        /* R */
         if (bf_z0 > 0) {
             y = z->child[1];
             if (x->parent)
@@ -177,7 +177,7 @@ unsigned char removed;
             y->child[0] = z;
             z->parent = y;
             
-            // Update BFs.
+            /* Update BFs. */
             bf_y0 = y->bf;
             if (bf_y0 > 0) {
                 x->bf = 0;
@@ -187,9 +187,9 @@ unsigned char removed;
                 z->bf = 0;
             }
             y->bf = 0;
-            // New x:
+            /* New x: */
             x = y;
-        // L
+        /* L */
         } else {
             if (x->parent)
                 x->parent->child[side_x] = z;
@@ -202,15 +202,15 @@ unsigned char removed;
             z->child[1] = x;
             x->parent = z;
             
-            // Update BFs.
+            /* Update BFs. */
             x->bf = -bf_z0 - 1;
             z->bf = bf_z0 + 1;
-            // New x:
+            /* New x: */
             x = z;
         }
     }
-    // If it balanced, it means that the increment or decrement was canceled
-    // out for the ancestors.
+    /* If it balanced, it means that the increment or decrement was canceled */
+    /* out for the ancestors. */
     if (removed ^ (x->bf != 0)) {
         inc = abs(x->bf - orig_bf);
         retrace(t, x->parent, x->parent? x->parent->child[removed? x->parent->bf > 0: side_x] : x,
@@ -218,17 +218,16 @@ unsigned char removed;
     }
 }
 
-void insert_avltree(t, inplace, key, value)
+void insert_avltree(t, key, value)
 avl_tree *t;
-unsigned char inplace;
 void *key, *value;
 {
     avl_node *node, *parent, *new;
     int gt;
     
-    // Commom insert in bst. ****
+    /* Commom insert in bst. **** */
     parent = NULL;
-    if ((node = find_node_avl(t, t->root, key, &parent)) && inplace) {
+    if ((node = find_node_avl(t, t->root, key, &parent)) && t->inplace) {
         if (node->has_value) {
             node->has_value = 0;
             free(node->value);
@@ -256,7 +255,7 @@ void *key, *value;
     new->child[0] = new->child[1] = NULL;
     new->bf = 0;
     t->nmemb++;
-    // ****
+    /* **** */
     if (parent)
         retrace(t, parent, new, gt * 2 - 1, 0);
 }
@@ -285,7 +284,7 @@ avl_node *z;
         y->child[1] = z->child[1];
         z->child[1]->parent = y;
         two = 1;
-        // Update Y BF
+        /* Update Y BF */
         y->bf = z->bf;
     } else
         y = z->child[0]? z->child[0] : z->child[1];
@@ -303,7 +302,7 @@ avl_node *z;
     free(z);
     t->nmemb--;
 
-    // Update BFs
+    /* Update BFs */
     if (y && two) {
         if (parenty == z) {
             parenty = y;
@@ -329,7 +328,7 @@ void *key, **value;
     return 0;
 }
 
-// Printing test routines, from BEE 1201:
+/* Printing test routines, from BEE 1201: */
 
 void infix_avl(t, r, last)
 avl_tree *t;
@@ -396,7 +395,7 @@ int *nmemb;
     keys_to_array_avl(t, r->child[1], arr, size, nmemb, capacity);
 }
 
-// Debug functions:
+/* Debug functions: */
 
 height_avl(t, r)
 avl_tree *t;

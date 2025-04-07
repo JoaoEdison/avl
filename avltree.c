@@ -34,14 +34,38 @@ avl_node *r;
     free(r);
 }
 
-avl_node *find_max_avltree(t, r)
+avl_node *find_max_avl(t, r)
 avl_tree *t;
 avl_node *r;
 {
     if (!r) return NULL;
     if (r->child[1])
-        return find_max_avltree(t, r->child[1]);
+        return find_max_avl(t, r->child[1]);
     return r;
+}
+
+avl_node *find_min_avl(t, r)
+avl_tree *t;
+avl_node *r;
+{
+    if (!r) return NULL;
+    if (r->child[0])
+        return find_min_avl(t, r->child[0]);
+    return r;
+}
+
+static avl_node *find_leaf_avl(t, r, key)
+avl_tree *t;
+avl_node *r;
+void *key;
+{
+	int gt;
+
+    if (!r) return NULL;
+	gt = t->compar(key, r->key) > 0;
+    if (!r->child[gt])
+        return r;
+    return find_leaf_avl(t, r->child[gt], key);
 }
 
 avl_node *find_node_avl(t, r, key, parent)
@@ -194,8 +218,9 @@ unsigned char removed;
     }
 }
 
-void insert_avltree(t, key, value)
+void insert_avltree(t, inplace, key, value)
 avl_tree *t;
+unsigned char inplace;
 void *key, *value;
 {
     avl_node *node, *parent, *new;
@@ -203,7 +228,7 @@ void *key, *value;
     
     // Commom insert in bst. ****
     parent = NULL;
-    if ((node = find_node_avl(t, t->root, key, &parent))) {
+    if ((node = find_node_avl(t, t->root, key, &parent)) && inplace) {
         if (node->has_value) {
             node->has_value = 0;
             free(node->value);
@@ -214,7 +239,8 @@ void *key, *value;
         }
         free(key);
         return;
-    }
+    } else
+        parent = find_leaf_avl(t, node? node : t->root, key);
     if (parent) {
         gt = t->compar(key, parent->key) > 0;
         new = parent->child[gt] = malloc(sizeof(avl_node));
@@ -235,20 +261,19 @@ void *key, *value;
         retrace(t, parent, new, gt * 2 - 1, 0);
 }
 
-remove_avltree(t, key, value)
+void remove_avl(t, z)
 avl_tree *t;
-void *key, **value;
+avl_node *z;
 {
-    avl_node *z, *y, *q, *parenty;
+    avl_node *y, *q, *parenty;
     unsigned char side_z, two;
     int inc;
-    
+
+    assert(z);
+    q = z->parent;
     two = 0;
-    q = NULL;
-    if (!(z = find_node_avl(t, t->root, key, &q)))
-        return 1;
     if (z->child[0] && z->child[1]) {
-        y = find_max_avltree(t, z->child[0]);
+        y = find_max_avl(t, z->child[0]);
         parenty = y->parent;
         if (parenty != z) {
             parenty->child[1] = y->child[0];
@@ -290,6 +315,17 @@ void *key, **value;
         retrace(t, q, q->child[!(q->bf || side_z) ||
                 q->bf > 0],
                 side_z? -1 : 1, 1);
+}
+
+remove_avltree(t, key, value)
+avl_tree *t;
+void *key, **value;
+{
+    avl_node *z;
+    
+    if (!(z = find_node_avl(t, t->root, key, NULL)))
+        return 1;
+    remove_avl(t, z);
     return 0;
 }
 
@@ -302,7 +338,10 @@ avl_node *r, *last;
     if (!r)
         return;
     infix_avl(t, r->child[0], last);
-    printf("%p %d [%d] (%p, %p) ^%p", r, *(int*)r->key, r->bf, r->child[0], r->child[1], r->parent);
+    printf("%p ", r);
+    if (t->print_node)
+        t->print_node(stdout, r->key, r->value);
+    printf(" [%d] (%p, %p) ^%p", r->bf, r->child[0], r->child[1], r->parent);
     if (last != r)
         putchar('\n');
     infix_avl(t, r->child[1], last);
@@ -316,7 +355,10 @@ avl_node *r;
         return;
     if (r != t->root)
         putchar('\n');
-    printf("%p %d [%d] (%p, %p) ^%p", r, *(int*)r->key, r->bf, r->child[0], r->child[1], r->parent);
+    printf("%p ", r);
+    if (t->print_node)
+        t->print_node(stdout, r->key, r->value);
+    printf(" [%d] (%p, %p) ^%p", r->bf, r->child[0], r->child[1], r->parent);
     prefix_avl(t, r->child[0]);
     prefix_avl(t, r->child[1]);
 }
@@ -329,7 +371,10 @@ avl_node *r;
         return;
     posfix_avl(t, r->child[0]);
     posfix_avl(t, r->child[1]);
-    printf("%p %d [%d] (%p, %p) ^%p", r, *(int*)r->key, r->bf, r->child[0], r->child[1], r->parent);
+    printf("%p ", r);
+    if (t->print_node)
+        t->print_node(stdout, r->key, r->value);
+    printf(" [%d] (%p, %p) ^%p", r->bf, r->child[0], r->child[1], r->parent);
     if (r != t->root)
         putchar('\n');
 }
@@ -363,7 +408,12 @@ avl_node *r;
     lh = height_avl(t, r->child[0])+1;
     rh = height_avl(t, r->child[1])+1;
     if (r->bf != rh - lh || abs(r->bf) >= 2) {
-        fprintf(stderr, "Node %d rh: %d lh: %d, BF -> %d\n", *(int*)r->key, rh, lh, r->bf);
+        fprintf(stderr, "Node ");
+        if (t->print_node)
+            t->print_node(stderr, r->key, r->value);
+        else
+            fprintf(stderr, "%p", r);
+        fprintf(stderr, " rh: %d lh: %d, BF -> %d\n", rh, lh, r->bf);
         exit(1);
     }
     return rh > lh? rh : lh;

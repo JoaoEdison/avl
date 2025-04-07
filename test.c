@@ -29,11 +29,17 @@ void *x, *y;
 {
     return *(int*)x-*(int*)y;
 }
+void print_key(fp, k, v)
+FILE *fp;
+void *k, *v;
+{
+    fprintf(fp, "%d", *(int*)k);
+}
 
 main()
 {
     avl_tree t;
-    create_alvtree(t, compar);
+    create_avltree(t, compar, print_key);
     int *key;
     
 #ifdef TEST_AUTO
@@ -50,7 +56,7 @@ main()
     int i,j,m;
     void *value;
     avl_tree removed;
-    create_alvtree(removed, compar);
+    create_avltree(removed, compar, NULL);
 
 #ifndef DEBUG    
     srand(time(NULL));
@@ -67,7 +73,7 @@ main()
         for (j=last; j < last+N; j++) {
             key = malloc(sizeof(int));
             *key = queue[j];
-            insert_avltree(&t, key, NULL);
+            insert_avltree(&t, 1, key, NULL);
 #ifdef DEBUG
             printf("Inserted: %d\n", *key);
 #endif
@@ -84,7 +90,7 @@ main()
         for (j=last; j < last+m; j++) {
             key = malloc(sizeof(int));
             *key = queue[j];
-            if (find_node_avltree(&removed, removed.root, key, NULL)) {
+            if (find_node_avltree(removed, key)) {
                 free(key);
                 continue;
             }
@@ -93,7 +99,7 @@ main()
             prefix_avltree(t);
             putchar('\n');
 #endif
-            insert_avltree(&removed, key, NULL);
+            insert_avltree(&removed, 1, key, NULL);
 #ifdef DEBUG
             printf("Removing: %d\n", queue[j]);
 #endif
@@ -109,7 +115,7 @@ main()
     for (; last < end; last++)  {
         key = malloc(sizeof(int));
         *key = queue[last];
-        if (find_node_avltree(&removed, removed.root, key, NULL)) {
+        if (find_node_avltree(removed, key)) {
             free(key);
             continue;
         }
@@ -118,7 +124,7 @@ main()
         prefix_avltree(t);
         putchar('\n');
 #endif
-        insert_avltree(&removed, key, NULL);
+        insert_avltree(&removed, 1, key, NULL);
 #ifdef DEBUG
         printf("Removing: %d\n", queue[last]);
 #endif

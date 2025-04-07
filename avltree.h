@@ -31,10 +31,16 @@ typedef struct {
     struct avl_node *root;
     int nmemb;
     int (*compar)(void *, void *);
+    void (*print_node)(FILE*, void *, void *);
 } avl_tree;
 
-#define create_alvtree(T, CMP_FN) \
-	do { T.root = NULL; T.nmemb = 0; T.compar = CMP_FN; } while (0)
+#define create_avltree(T, CMP_FN, PRINT_FN) \
+    do { \
+         T.root = NULL; \
+         T.nmemb = 0; \
+         T.compar = CMP_FN; \
+         T.print_node = PRINT_FN; \
+    } while (0)
 
 void destroy_avl(avl_tree *t, avl_node *r);
 #define destroy_avltree(T) \
@@ -54,14 +60,26 @@ void destroy_avl(avl_tree *t, avl_node *r);
         } \
     } while (0)
 
+avl_node *find_max_avl(avl_tree *t, avl_node *r);
+#define find_max_avltree(T) \
+    find_max_avl(&T, T.root)
+avl_node *find_min_avl(avl_tree *t, avl_node *r);
+#define find_min_avltree(T) \
+    find_min_avl(&T, T.root)
+avl_node *find_gt_avl(avl_tree *t, avl_node *r, void *key, avl_node **parent);
+
 avl_node *find_node_avl(avl_tree *t, avl_node *r, void *key, avl_node **parent);
 #define find_node_avltree(T, KEY) \
     find_node_avl(&T, T.root, KEY, NULL)
 #define find_node_avltree_ptr(T, KEY) \
     find_node_avl(T, T->root, KEY, NULL)
 
-avl_node *find_max_avltree(avl_tree *t, avl_node *r);
-void insert_avltree(avl_tree *t, void *key, void *value);
+void insert_avltree(avl_tree *t, unsigned char inplace, void *key, void *value);
+#define insert_key_avltree(T, INPLACE, KEY) \
+    insert_avltree(T, INPLACE, KEY, NULL)
+
+void remove_avl(avl_tree *t, avl_node *z);
+
 int remove_avltree(avl_tree *t, void *key, void **value);
 
 int height_avl(avl_tree *t, avl_node *r);

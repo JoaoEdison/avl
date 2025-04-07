@@ -39,12 +39,12 @@ void *k, *v;
 main()
 {
     avl_tree t;
-    create_avltree(t, compar, print_key);
+    create_avltree(t, 1, compar, print_key);
     int *key;
     
 #ifdef TEST_AUTO
-//  #define DEBUG
-//  #define PRINT
+/*  #define DEBUG */
+/*  #define PRINT */
     #define N 5000
     #define M N
     #define K 200
@@ -56,24 +56,24 @@ main()
     int i,j,m;
     void *value;
     avl_tree removed;
-    create_avltree(removed, compar, NULL);
+    create_avltree(removed, 1, compar, NULL);
 
 #ifndef DEBUG    
     srand(time(NULL));
 #endif
     end = last = 0;
     queue = malloc(sizeof(int)*MAX_LEN);
-    // Repeat K times:
+    /* Repeat K times: */
     for (i=0; i < K; i++) {
-        // Generate N random numbers:
+        /* Generate N random numbers: */
         for (j=last; j < last+N; j++)
             queue[j] = rand()%MOD;
         end = j;
-        // Insert in tree:
+        /* Insert in tree: */
         for (j=last; j < last+N; j++) {
             key = malloc(sizeof(int));
             *key = queue[j];
-            insert_avltree(&t, 1, key, NULL);
+            insert_avltree(&t, key, NULL);
 #ifdef DEBUG
             printf("Inserted: %d\n", *key);
 #endif
@@ -83,9 +83,9 @@ main()
             putchar('\n');
 #endif
         }
-        // Sort in ascending order:
+        /* Sort in ascending order: */
         qsort(&queue[last], N, sizeof(int), compar);
-        // Remove M in this order (everything needs to be present):
+        /* Remove M in this order (everything needs to be present): */
         m = rand()%M+1;
         for (j=last; j < last+m; j++) {
             key = malloc(sizeof(int));
@@ -99,7 +99,7 @@ main()
             prefix_avltree(t);
             putchar('\n');
 #endif
-            insert_avltree(&removed, 1, key, NULL);
+            insert_avltree(&removed, key, NULL);
 #ifdef DEBUG
             printf("Removing: %d\n", queue[j]);
 #endif
@@ -111,7 +111,7 @@ main()
 #endif
         last = j;
     }
-    // Remove everything:
+    /* Remove everything: */
     for (; last < end; last++)  {
         key = malloc(sizeof(int));
         *key = queue[last];
@@ -124,13 +124,13 @@ main()
         prefix_avltree(t);
         putchar('\n');
 #endif
-        insert_avltree(&removed, 1, key, NULL);
+        insert_avltree(&removed, key, NULL);
 #ifdef DEBUG
         printf("Removing: %d\n", queue[last]);
 #endif
         assert(!remove_avltree(&t, &queue[last], &value));
     }
-    // Need to verify if happened any memory error.
+    /* Need to verify if happened any memory error. */
     destroy_avltree(removed);
     free(queue);
 #else

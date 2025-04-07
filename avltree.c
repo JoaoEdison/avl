@@ -59,10 +59,10 @@ avl_tree *t;
 avl_node *r;
 void *key;
 {
-	int gt;
+    int gt;
 
     if (!r) return NULL;
-	gt = t->compar(key, r->key) > 0;
+    gt = t->compar(key, r->key) > 0;
     if (!r->child[gt])
         return r;
     return find_leaf_avl(t, r->child[gt], key);

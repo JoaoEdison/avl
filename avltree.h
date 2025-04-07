@@ -66,7 +66,6 @@ avl_node *find_max_avl(avl_tree *t, avl_node *r);
 avl_node *find_min_avl(avl_tree *t, avl_node *r);
 #define find_min_avltree(T) \
     find_min_avl(&T, T.root)
-avl_node *find_gt_avl(avl_tree *t, avl_node *r, void *key, avl_node **parent);
 
 avl_node *find_node_avl(avl_tree *t, avl_node *r, void *key, avl_node **parent);
 #define find_node_avltree(T, KEY) \

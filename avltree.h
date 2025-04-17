@@ -82,7 +82,7 @@ void insert_avltree(avl_tree *t, void *key, void *value);
 
 void remove_avl(avl_tree *t, avl_node *z);
 
-int remove_avltree(avl_tree *t, void *key, void **value);
+int remove_avltree(avl_tree *t, void *key);
 
 int height_avl(avl_tree *t, avl_node *r);
 #define height_avltree(T) \

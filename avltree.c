@@ -316,9 +316,9 @@ avl_node *z;
                 side_z? -1 : 1, 1);
 }
 
-remove_avltree(t, key, value)
+remove_avltree(t, key)
 avl_tree *t;
-void *key, **value;
+void *key;
 {
     avl_node *z;
     
@@ -413,7 +413,7 @@ avl_node *r;
         else
             fprintf(stderr, "%p", r);
         fprintf(stderr, " rh: %d lh: %d, BF -> %d\n", rh, lh, r->bf);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     return rh > lh? rh : lh;
 }

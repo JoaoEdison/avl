@@ -73,7 +73,7 @@ main()
         for (j=last; j < last+N; j++) {
             key = malloc(sizeof(int));
             *key = queue[j];
-            insert_avltree(&t, key, NULL);
+            insert_key_avltree(t, key);
 #ifdef DEBUG
             printf("Inserted: %d\n", *key);
 #endif
@@ -99,11 +99,11 @@ main()
             prefix_avltree(t);
             putchar('\n');
 #endif
-            insert_avltree(&removed, key, NULL);
+            insert_key_avltree(removed, key);
 #ifdef DEBUG
             printf("Removing: %d\n", queue[j]);
 #endif
-            assert(!remove_avltree(&t, &queue[j], &value));
+            assert(!remove_node_avltree(t, &queue[j]));
         }
 #ifdef PRINT
         prefix_avltree(t);
@@ -124,11 +124,11 @@ main()
         prefix_avltree(t);
         putchar('\n');
 #endif
-        insert_avltree(&removed, key, NULL);
+        insert_key_avltree(removed, key);
 #ifdef DEBUG
         printf("Removing: %d\n", queue[last]);
 #endif
-        assert(!remove_avltree(&t, &queue[last], &value));
+        assert(!remove_node_avltree(t, &queue[last]));
     }
     /* Need to verify if happened any memory error. */
     destroy_avltree(removed);
@@ -140,7 +140,7 @@ main()
         printf("Insert the new key: ");
         key = malloc(sizeof(int));
         scanf("%d", key);
-        insert_avltree(&t, key, NULL);
+        insert_key_avltree(t, key);
         prefix_avltree(t);
         putchar('\n');
         infix_avltree(t);

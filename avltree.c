@@ -218,7 +218,7 @@ unsigned char removed;
     }
 }
 
-void insert_avltree(t, key, value)
+avl_node *insert_avltree(t, key, value)
 avl_tree *t;
 void *key, *value;
 {
@@ -237,7 +237,7 @@ void *key, *value;
             node->value = value;
         }
         free(key);
-        return;
+        return node;
     } else
         parent = find_leaf_avl(t, node? node : t->root, key);
     if (parent) {
@@ -258,6 +258,7 @@ void *key, *value;
     /* **** */
     if (parent)
         retrace(t, parent, new, gt * 2 - 1, 0);
+    return new;
 }
 
 void remove_avl(t, z)

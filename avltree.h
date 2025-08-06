@@ -76,13 +76,19 @@ avl_node *find_node_avl(avl_tree *t, avl_node *r, void *key, avl_node **parent);
 #define find_node_avltree_ptr(T, KEY) \
     find_node_avl(T, T->root, KEY, NULL)
 
-void insert_avltree(avl_tree *t, void *key, void *value);
+avl_node *insert_avltree(avl_tree *t, void *key, void *value);
 #define insert_key_avltree(T, KEY) \
+    insert_avltree(&T, KEY, NULL)
+#define insert_key_avltree_ptr(T, KEY) \
     insert_avltree(T, KEY, NULL)
 
 void remove_avl(avl_tree *t, avl_node *z);
 
 int remove_avltree(avl_tree *t, void *key);
+#define remove_node_avltree(T, KEY) \
+    remove_avltree(&T, KEY)
+#define remove_node_avltree_ptr(T, KEY) \
+    remove_avltree(T, KEY)
 
 int height_avl(avl_tree *t, avl_node *r);
 #define height_avltree(T) \

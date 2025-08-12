@@ -1,6 +1,6 @@
 /*
     AVL tree implementation in C.
-    Copyright (C) 2025  João Manica
+    Copyright (C) 2025  João Manica  <joaoedisonmanica@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
 
 void destroy_avl(t, r)
 avl_tree *t;

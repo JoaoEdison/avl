@@ -1,6 +1,6 @@
 /*
     AVL tree implementation in C.
-    Copyright (C) 2025  João Manica
+    Copyright (C) 2025  João Manica  <joaoedisonmanica@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ typedef struct avl_node {
 typedef struct {
     struct avl_node *root;
     int nmemb;
-    int (*compar)(void *, void *);
+    int (*compar)(const void *, const void *);
     void (*print_node)(FILE*, void *, void *);
     /* If true, the insertion replaces values with the same key */
     unsigned char inplace;

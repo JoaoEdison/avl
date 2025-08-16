@@ -38,8 +38,8 @@ void *k, *v;
 
 main()
 {
-    avl_tree t;
-    create_avltree(t, 1, compar, print_key);
+    avltree_tree t;
+    avltree_create(t, 1, compar, print_key);
     int *key;
     
 #ifdef TEST_AUTO
@@ -55,8 +55,8 @@ main()
     int *queue;
     int i,j,m;
     void *value;
-    avl_tree removed;
-    create_avltree(removed, 1, compar, NULL);
+    avltree_tree removed;
+    avltree_create(removed, 1, compar, NULL);
 
 #ifndef DEBUG    
     srand(time(NULL));
@@ -73,13 +73,13 @@ main()
         for (j=last; j < last+N; j++) {
             key = malloc(sizeof(int));
             *key = queue[j];
-            insert_key_avltree(t, key);
+            avltree_insert_key(t, key);
 #ifdef DEBUG
             printf("Inserted: %d\n", *key);
 #endif
-            height_avltree(t);
+            avltree_height(t);
 #ifdef PRINT
-            prefix_avltree(t);
+            avltree_prefix(t);
             putchar('\n');
 #endif
         }
@@ -90,23 +90,23 @@ main()
         for (j=last; j < last+m; j++) {
             key = malloc(sizeof(int));
             *key = queue[j];
-            if (find_node_avltree(removed, key)) {
+            if (avltree_find_node(removed, key)) {
                 free(key);
                 continue;
             }
-            height_avltree(t);
+            avltree_height(t);
 #ifdef PRINT
-            prefix_avltree(t);
+            avltree_prefix(t);
             putchar('\n');
 #endif
-            insert_key_avltree(removed, key);
+            avltree_insert_key(removed, key);
 #ifdef DEBUG
             printf("Removing: %d\n", queue[j]);
 #endif
-            assert(!remove_node_avltree(t, &queue[j]));
+            assert(!avltree_remove_node(t, &queue[j]));
         }
 #ifdef PRINT
-        prefix_avltree(t);
+        avltree_prefix(t);
         putchar('\n');
 #endif
         last = j;
@@ -115,23 +115,23 @@ main()
     for (; last < end; last++)  {
         key = malloc(sizeof(int));
         *key = queue[last];
-        if (find_node_avltree(removed, key)) {
+        if (avltree_find_node(removed, key)) {
             free(key);
             continue;
         }
-        height_avltree(t);
+        avltree_height(t);
 #ifdef PRINT
-        prefix_avltree(t);
+        avltree_prefix(t);
         putchar('\n');
 #endif
-        insert_key_avltree(removed, key);
+        avltree_insert_key(removed, key);
 #ifdef DEBUG
         printf("Removing: %d\n", queue[last]);
 #endif
-        assert(!remove_node_avltree(t, &queue[last]));
+        assert(!avltree_remove_node(t, &queue[last]));
     }
     /* Need to verify if happened any memory error. */
-    destroy_avltree(removed);
+    avltree_destroy(removed);
     free(queue);
 #else
     char opt;
@@ -140,17 +140,17 @@ main()
         printf("Insert the new key: ");
         key = malloc(sizeof(int));
         scanf("%d", key);
-        insert_key_avltree(t, key);
-        prefix_avltree(t);
+        avltree_insert_key(t, key);
+        avltree_prefix(t);
         putchar('\n');
-        infix_avltree(t);
+        avltree_infix(t);
         putchar('\n');
-        posfix_avltree(t);
+        avltree_posfix(t);
         putchar('\n');
         printf("Continue (y)? ");
         getchar();
         opt = getchar();
     } while (opt == 'Y' || opt == 'y');
 #endif
-    destroy_avltree(t);
+    avltree_destroy(t);
 }

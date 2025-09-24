@@ -1,7 +1,11 @@
 /*
-    avltree.h - v1.0.0
+    avltree.h - v1.1.0
     AVL tree implementation in C.
     Copyright (C) 2025  João Manica  <joaoedisonmanica@gmail.com>
+
+    History:
+        v1.1.0  Functions to free only avltree_node struct
+        v1.0.0  First version
 
     avltree.h is free software: you can redistribute it and/or modify it under
     the terms of the GNU General Public License as published by the Free
@@ -59,6 +63,13 @@ void avl_destroy(avltree_tree *t, avltree_node *r);
             T->root = NULL; \
         } \
     } while (0)
+
+/* Does not release memory in key and value. */
+void avl_empty(avltree_tree *t, avltree_node *r);
+#define avltree_empty(T) \
+    avl_empty(&(T), (T).root)
+#define avltree_empty_ptr(T) \
+    avl_empty(T, (T)->root)
 
 avltree_node *avl_find_max(avltree_tree *t, avltree_node *r);
 #define avltree_find_max(T) \

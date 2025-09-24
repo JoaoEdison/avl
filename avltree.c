@@ -1,7 +1,11 @@
 /*
-    avltree.c - v1.0.0
+    avltree.c - v1.1.0
     AVL tree implementation in C.
     Copyright (C) 2025  João Manica  <joaoedisonmanica@gmail.com>
+
+    History:
+        v1.1.0  avl_empty()
+        v1.0.0  First version
 
     avltree.c is free software: you can redistribute it and/or modify it under
     the terms of the GNU General Public License as published by the Free
@@ -18,6 +22,17 @@
 #include <string.h>
 #include <assert.h>
 
+
+void avl_empty(t, r)
+avltree_tree *t;
+avltree_node *r;
+{
+    if (!r)
+        return;
+    avl_empty(t, r->child[0]);
+    avl_empty(t, r->child[1]);
+    free(r);
+}
 
 void avl_destroy(t, r)
 avltree_tree *t;

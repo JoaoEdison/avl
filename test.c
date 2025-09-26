@@ -35,7 +35,7 @@ void *k, *v;
 main()
 {
     avltree_tree t;
-    avltree_create(t, 1, compar, print_key);
+    avltree_create(t, 1, compar, print_key, NULL);
     int *key;
     
 #ifdef TEST_AUTO
@@ -50,9 +50,8 @@ main()
     int end, last;
     int *queue;
     int i,j,m;
-    void *value;
     avltree_tree removed;
-    avltree_create(removed, 1, compar, NULL);
+    avltree_create(removed, 1, compar, NULL, NULL);
 
 #ifndef DEBUG    
     srand(time(NULL));
@@ -73,7 +72,7 @@ main()
 #ifdef DEBUG
             printf("Inserted: %d\n", *key);
 #endif
-            avltree_height(t);
+            avltree_height(stderr, t);
 #ifdef PRINT
             avltree_prefix(t);
             putchar('\n');
@@ -90,7 +89,7 @@ main()
                 free(key);
                 continue;
             }
-            avltree_height(t);
+            avltree_height(stderr, t);
 #ifdef PRINT
             avltree_prefix(t);
             putchar('\n');
@@ -99,7 +98,7 @@ main()
 #ifdef DEBUG
             printf("Removing: %d\n", queue[j]);
 #endif
-            assert(!avltree_remove_node(t, &queue[j]));
+            assert(!avltree_remove_node(t, &queue[j], AVLTREE_FREE_BOTH));
         }
 #ifdef PRINT
         avltree_prefix(t);
@@ -115,7 +114,7 @@ main()
             free(key);
             continue;
         }
-        avltree_height(t);
+        avltree_height(stderr, t);
 #ifdef PRINT
         avltree_prefix(t);
         putchar('\n');
@@ -124,7 +123,7 @@ main()
 #ifdef DEBUG
         printf("Removing: %d\n", queue[last]);
 #endif
-        assert(!avltree_remove_node(t, &queue[last]));
+        assert(!avltree_remove_node(t, &queue[last], AVLTREE_FREE_BOTH));
     }
     /* Need to verify if happened any memory error. */
     avltree_destroy(removed);

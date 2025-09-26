@@ -2,7 +2,8 @@ avltree - AVL tree implementation in C
 ======================================
 
 An AVL tree implementation in C. It uses balance factor to check if nodes are
-balanced and stores pointers to the data they contain.
+balanced and stores pointers to the data they contain. Traversal is done with
+recursion.
 
 avltree is free software: you can redistribute it and/or modify it under the
 terms of the GNU General Public License.
